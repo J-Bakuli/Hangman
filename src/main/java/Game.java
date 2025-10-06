@@ -1,0 +1,141 @@
+package main.java;
+
+import java.util.*;
+
+public class Game {
+    private static final char HIDDEN_CHARACTER = '_';
+    private final String secretWord;
+    private final int maxErrCount;
+    private final Set<Character> wrongLetters;
+    private final Set<Character> guessedLetters;
+    private int errorCount;
+
+    public Game() {
+        Optional<String> optionalWord = SecretWord.selectRandomSecretWord();
+
+        if (optionalWord.isEmpty()) {
+            throw new RuntimeException("Не удалось загрузить секретное слово. ");
+        }
+
+        this.secretWord = optionalWord.get();
+        this.errorCount = 0;
+        this.maxErrCount = 6;
+        this.wrongLetters = new HashSet<>();
+        this.guessedLetters = new HashSet<>();
+    }
+
+    public void start(Scanner scanner) {
+        printInfo();
+        boolean isGameWon = false;
+
+        while (errorCount < maxErrCount) {
+            Hangman.display(errorCount);
+
+            boolean isWordGuessed = processUserInput(scanner);
+
+            if (isWordGuessed) {
+                System.out.println("Поздравляем, вы выиграли!");
+                isGameWon = true;
+                break;
+            }
+        }
+
+        if (!isGameWon) {
+            System.out.println("Игра окончена. Вы допустили максимальное количество ошибок.");
+            System.out.println("Загаданное слово: " + secretWord);
+        }
+    }
+
+    private boolean processUserInput(Scanner scanner) {
+        boolean isWordGuessed = false;
+        while (errorCount < maxErrCount) {
+            System.out.println("Введите букву, которая есть в слове: ");
+            if (errorCount > 0) {
+                printWrongLetters(wrongLetters);
+            }
+
+            String str = scanner.nextLine().toLowerCase(Locale.ROOT).trim();
+
+            if (UserInputValidation.isInvalidInput(str)) {
+                continue;
+            }
+
+            char inputLetter = Character.toLowerCase(str.charAt(0));
+
+            if (isLetterAlreadyGuessed(inputLetter)) {
+                System.out.println("Вы уже вводили букву '" + inputLetter + "'!");
+                continue;
+            }
+
+            boolean isContains = isContainsInWord(inputLetter);
+            updateGameState(inputLetter, isContains);
+            displayGameStatus(inputLetter, isContains, errorCount);
+
+            if (checkWin()) {
+                isWordGuessed = true;
+                break;
+            }
+
+            if (errorCount == maxErrCount) {
+                break;
+            }
+        }
+        return isWordGuessed;
+    }
+
+    private void printWrongLetters(Set<Character> set) {
+        System.out.printf("Вы уже неверно ввели: %s%n", set);
+    }
+
+    private void printInfo() {
+        System.out.printf("Максимальное число ошибок, которое можно допустить: %d%n", maxErrCount);
+        String underline = "_".repeat(secretWord.length());
+        System.out.println("Загаданное слово: " + underline);
+    }
+
+    private boolean isLetterAlreadyGuessed(char ch) {
+        return (guessedLetters.contains(ch) || wrongLetters.contains(ch));
+    }
+
+    private boolean isContainsInWord(char ch) {
+        return secretWord.indexOf(ch) != -1;
+    }
+
+    private String printLetterOrDashes(String word) {
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < word.length(); i++) {
+            char currentChar = word.charAt(i);
+
+            if (guessedLetters.contains(currentChar)) {
+                result.append(currentChar);
+            } else {
+                result.append(HIDDEN_CHARACTER);
+            }
+        }
+        System.out.println(result);
+        return result.toString();
+    }
+
+    private void updateGameState(char ch, boolean isContains) {
+        if (isContains) {
+            guessedLetters.add(ch);
+            printLetterOrDashes(secretWord);
+        } else {
+            wrongLetters.add(ch);
+            errorCount++;
+        }
+    }
+
+    private void displayGameStatus(char ch, boolean isContains, int errorCount) {
+        Hangman.display(errorCount);
+        System.out.printf("Содержит букву %s? - %s%n", ch, (isContains ? "да" : "нет"));
+        System.out.printf("Осталось возможных ошибок: %d%n", maxErrCount - errorCount);
+        System.out.printf("Допущено ошибок: %d%n", errorCount);
+    }
+
+    private boolean checkWin() {
+        return printLetterOrDashes(secretWord).equals(secretWord);
+    }
+}
+
