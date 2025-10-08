@@ -1,9 +1,12 @@
 ### IntelliJ IDEA ###
+.idea
+.idea/*
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 target/
 **/target/
+*.pub
 
 ### AWS ###
 .idea/aws.xml
