@@ -19,24 +19,18 @@ public class Game {
 
     public void start(Scanner scanner) {
         printInfo();
-        boolean isGameWon = false;
 
         while (errCount < maxErrCount) {
-            HangmanRenderer.display(errCount);
+            displayGameStatus(errCount);
+            processUserInput(scanner);
 
-            boolean isWordGuessed = processUserInput(scanner);
-
-            if (isWordGuessed) {
+            if (isWin()) {
                 System.out.println("Поздравляем, вы выиграли!");
-                isGameWon = true;
-                break;
+                return;
             }
         }
-
-        if (!isGameWon) {
-            System.out.println("Игра окончена. Вы допустили максимальное количество ошибок.");
-            System.out.println("Загаданное слово: " + secretWord);
-        }
+        System.out.println("Игра окончена. Вы допустили максимальное количество ошибок.");
+        System.out.println("Загаданное слово: " + secretWord);
     }
 
     private boolean processUserInput(Scanner scanner) {
@@ -64,7 +58,7 @@ public class Game {
             updateGameState(inputLetter, isContains);
             displayGameStatus(inputLetter, isContains, errCount);
 
-            if (checkWin()) {
+            if (isWin()) {
                 isWordGuessed = true;
                 break;
             }
@@ -120,6 +114,10 @@ public class Game {
         }
     }
 
+    private void displayGameStatus(int errCount) {
+        HangmanRenderer.display(errCount);
+    }
+
     private void displayGameStatus(char ch, boolean isContains, int errorCount) {
         HangmanRenderer.display(errorCount);
         System.out.printf("Содержит букву %s? - %s%n", ch, (isContains ? "да" : "нет"));
@@ -127,7 +125,7 @@ public class Game {
         System.out.printf("Допущено ошибок: %d%n", errorCount);
     }
 
-    private boolean checkWin() {
+    private boolean isWin() {
         return printLetterOrDashes(secretWord).equals(secretWord);
     }
 }
