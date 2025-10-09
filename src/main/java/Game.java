@@ -11,13 +11,13 @@ public class Game {
     private int errCount;
 
     public Game() {
-        Optional<String> optionalWord = Dictionary.selectRandomSecretWord();
+        String optionalWord = Dictionary.selectRandomSecretWord();
 
         if (optionalWord.isEmpty()) {
             throw new RuntimeException("Не удалось загрузить секретное слово. ");
         }
 
-        this.secretWord = optionalWord.get();
+        this.secretWord = optionalWord;
         this.errCount = 0;
         this.maxErrCount = 6;
         this.wrongLetters = new HashSet<>();

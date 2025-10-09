@@ -5,69 +5,53 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 public class Dictionary {
-    private static List<String> dictionary;
+    private static final List<String> dictionary = initializeDictionary();
+    private static final Random RANDOM = new Random();
 
     private static final String PATH = "src/main/resources/data/dictionary";
 
-    static {
-        loadDictionary();
-    }
-
-    public static void loadDictionary() {
+    private static List<String> initializeDictionary() {
         try {
-            Path path = Paths.get(PATH);
-            String content = Files.readString(path);
-
-            dictionary = Arrays.stream(content.split(","))
-                    .map(String::trim)
-                    .filter(word -> !word.isEmpty())
-                    .toList();
-
-            if (dictionary.isEmpty()) {
-                handleEmptyFileError();
-            }
+            return loadDictionary();
         } catch (IOException e) {
-            handleIOException(e);
-        } catch (IllegalArgumentException e) {
-            handleIllegalArgumentError(e);
-        } catch (Exception e) {
-            handleUnexpectedError(e);
+            throwIOException();
+            return Collections.emptyList();
         }
     }
 
-    public static Optional<String> selectRandomSecretWord() {
+    public static List<String> loadDictionary() throws IOException {
+        Path path = Paths.get(PATH);
+        String content = Files.readString(path);
+
+        return Arrays.stream(content.split(","))
+                .map(String::trim)
+                .filter(word -> !word.isEmpty())
+                .toList();
+    }
+
+    public static String selectRandomSecretWord() {
         if (dictionary == null || dictionary.isEmpty()) {
-            handleEmptyDictionaryError();
-            return Optional.empty();
+            throwEmptyDictionaryError();
         }
-        return Optional.of(dictionary.get(new Random().nextInt(dictionary.size())));
+        int dictionarySize = dictionary.size();
+
+        int randomIndex = RANDOM.nextInt(dictionarySize);
+
+        String randomSecretWord = dictionary.get(randomIndex);
+
+        return randomSecretWord;
     }
 
-    private static void handleEmptyFileError() {
-        System.err.println("Файл слов пуст");
+    private static void throwEmptyDictionaryError() {
+        throw new RuntimeException("Dictionary in path %s is empty. Please add words for the game".formatted(PATH));
     }
 
-    private static void handleIOException(IOException e) {
-        System.err.println("Ошибка при чтении файла: " + e.getMessage());
-        e.printStackTrace();
-    }
-
-    private static void handleEmptyDictionaryError() {
-        System.err.println("Словарь не загружен или пуст");
-    }
-
-    private static void handleIllegalArgumentError(IllegalArgumentException e) {
-        System.err.println("Ошибка при обработке данных: " + e.getMessage());
-        e.printStackTrace();
-    }
-
-    private static void handleUnexpectedError(Exception e) {
-        System.err.println("Непредвиденная ошибка: " + e.getMessage());
-        e.printStackTrace();
+    private static void throwIOException() {
+        throw new RuntimeException("Error reading dictionary from path %s".formatted(PATH));
     }
 }
