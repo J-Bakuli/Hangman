@@ -56,7 +56,7 @@ public class Game {
 
             String str = scanner.nextLine().toLowerCase(Locale.ROOT).trim();
 
-            if (!UserInputValidation.isValidInput(str)) {
+            if (!UserInputValidation.isValidGameInput(str)) {
                 continue;
             }
 

@@ -4,18 +4,13 @@ import java.util.Locale;
 import java.util.Scanner;
 
 public class App {
-    private static Scanner scanner;
-
-    public App () {
-        this.scanner = new Scanner(System.in);
-    }
+    private static final Scanner scanner = new Scanner(System.in);
 
     public void run() {
         try {
             displayMenu();
             handleUserInput();
-        }
-        finally {
+        } finally {
             scanner.close();
         }
     }
@@ -27,23 +22,19 @@ public class App {
     private static void handleUserInput() {
         boolean isRunning = true;
 
-        try {
-            while (isRunning) {
-                String input = readAndValidateInput();
+        while (isRunning) {
+            String input = readAndValidateInput();
 
-                switch (input) {
-                    case "н":
-                        startNewGame();
-                        break;
-                    case "в":
-                        isRunning = false;
-                        break;
-                    default:
-                        System.out.println("Сделайте выбор снова.");
-                }
+            switch (input) {
+                case "н":
+                    startNewGame();
+                    break;
+                case "в":
+                    isRunning = false;
+                    break;
+                default:
+                    System.out.println("Сделайте выбор снова.");
             }
-        } finally {
-            scanner.close();
         }
     }
 
@@ -54,16 +45,16 @@ public class App {
         displayMenu();
     }
 
-    static String readAndValidateInput() {
+    private static String readAndValidateInput() {
         String input = readInput();
 
-        while (!UserInputValidation.isValidInput(input)) {
+        while (!UserInputValidation.isValidMenuInput(input)) {
             input = readInput();
         }
         return input;
     }
 
-    static String readInput() {
+    private static String readInput() {
         return scanner.nextLine().toLowerCase(Locale.ROOT).trim();
     }
 }
