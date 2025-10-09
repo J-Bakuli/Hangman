@@ -1,27 +1,20 @@
 package main.java;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Scanner;
+import java.util.Set;
 
 public class Game {
     private static final char HIDDEN_CHARACTER = '_';
     private final String secretWord;
-    private final int maxErrCount;
-    private final Set<Character> wrongLetters;
-    private final Set<Character> guessedLetters;
-    private int errCount;
+    private final int maxErrCount = 6;
+    private final Set<Character> wrongLetters = new HashSet<>();
+    private final Set<Character> guessedLetters = new HashSet<>();
+    private int errCount = 0;
 
     public Game() {
-        String optionalWord = Dictionary.selectRandomSecretWord();
-
-        if (optionalWord.isEmpty()) {
-            throw new RuntimeException("Не удалось загрузить секретное слово. ");
-        }
-
-        this.secretWord = optionalWord;
-        this.errCount = 0;
-        this.maxErrCount = 6;
-        this.wrongLetters = new HashSet<>();
-        this.guessedLetters = new HashSet<>();
+        this.secretWord = Dictionary.selectRandomSecretWord();
     }
 
     public void start(Scanner scanner) {
