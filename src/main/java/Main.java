@@ -53,7 +53,7 @@ public class Main {
     static String readAndValidateInput() {
         String input = readInput();
 
-        while (UserInputValidation.isInvalidInput(input)) {
+        while (!UserInputValidation.isValidInput(input)) {
             input = readInput();
         }
         return input;

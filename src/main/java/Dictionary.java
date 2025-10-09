@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-public class SecretWord {
+public class Dictionary {
     private static List<String> dictionary;
+
+    private static final String PATH = "src/main/resources/data/dictionary";
 
     static {
         loadDictionary();
@@ -18,7 +20,7 @@ public class SecretWord {
 
     public static void loadDictionary() {
         try {
-            Path path = Paths.get("src/main/resources/data/dictionary");
+            Path path = Paths.get(PATH);
             String content = Files.readString(path);
 
             dictionary = Arrays.stream(content.split(","))

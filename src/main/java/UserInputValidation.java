@@ -1,33 +1,36 @@
 package main.java;
 
 public class UserInputValidation {
-    public static boolean isInvalidInput(String str) {
+    public static boolean isValidInput(String str) {
         if (str == null || str.isEmpty()) {
             System.out.println("Ввод не может быть пустым");
-            return true;
+            return false;
         }
 
         if (str.length() != 1) {
             System.out.printf("Пожалуйста, введите ровно одну букву, вы ввели '%s'%n", str);
-            return true;
+            return false;
         }
 
         char ch = str.charAt(0);
 
         if (!Character.isLetter(ch)) {
             System.out.printf("Символ '%s' не является буквой%n", ch);
-            return true;
+            return false;
         }
 
         if (!isRussianLetter(ch)) {
             System.out.printf("Символ '%s' не является буквой русского алфавита%n", ch);
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     private static boolean isRussianLetter(char ch) {
-        return Character.UnicodeBlock.of(ch) == Character.UnicodeBlock.CYRILLIC;
+        return (ch >= 'А' && ch <= 'Я') ||
+                (ch >= 'а' && ch <= 'я') ||
+                ch == 'Ё' ||
+                ch == 'ё';
     }
 }

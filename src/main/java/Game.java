@@ -8,17 +8,17 @@ public class Game {
     private final int maxErrCount;
     private final Set<Character> wrongLetters;
     private final Set<Character> guessedLetters;
-    private int errorCount;
+    private int errCount;
 
     public Game() {
-        Optional<String> optionalWord = SecretWord.selectRandomSecretWord();
+        Optional<String> optionalWord = Dictionary.selectRandomSecretWord();
 
         if (optionalWord.isEmpty()) {
             throw new RuntimeException("Не удалось загрузить секретное слово. ");
         }
 
         this.secretWord = optionalWord.get();
-        this.errorCount = 0;
+        this.errCount = 0;
         this.maxErrCount = 6;
         this.wrongLetters = new HashSet<>();
         this.guessedLetters = new HashSet<>();
@@ -28,8 +28,8 @@ public class Game {
         printInfo();
         boolean isGameWon = false;
 
-        while (errorCount < maxErrCount) {
-            Hangman.display(errorCount);
+        while (errCount < maxErrCount) {
+            HangmanRenderer.display(errCount);
 
             boolean isWordGuessed = processUserInput(scanner);
 
@@ -48,15 +48,15 @@ public class Game {
 
     private boolean processUserInput(Scanner scanner) {
         boolean isWordGuessed = false;
-        while (errorCount < maxErrCount) {
+        while (errCount < maxErrCount) {
             System.out.println("Введите букву, которая есть в слове: ");
-            if (errorCount > 0) {
+            if (errCount > 0) {
                 printWrongLetters(wrongLetters);
             }
 
             String str = scanner.nextLine().toLowerCase(Locale.ROOT).trim();
 
-            if (UserInputValidation.isInvalidInput(str)) {
+            if (!UserInputValidation.isValidInput(str)) {
                 continue;
             }
 
@@ -69,14 +69,14 @@ public class Game {
 
             boolean isContains = isContainsInWord(inputLetter);
             updateGameState(inputLetter, isContains);
-            displayGameStatus(inputLetter, isContains, errorCount);
+            displayGameStatus(inputLetter, isContains, errCount);
 
             if (checkWin()) {
                 isWordGuessed = true;
                 break;
             }
 
-            if (errorCount == maxErrCount) {
+            if (errCount == maxErrCount) {
                 break;
             }
         }
@@ -123,12 +123,12 @@ public class Game {
             printLetterOrDashes(secretWord);
         } else {
             wrongLetters.add(ch);
-            errorCount++;
+            errCount++;
         }
     }
 
     private void displayGameStatus(char ch, boolean isContains, int errorCount) {
-        Hangman.display(errorCount);
+        HangmanRenderer.display(errorCount);
         System.out.printf("Содержит букву %s? - %s%n", ch, (isContains ? "да" : "нет"));
         System.out.printf("Осталось возможных ошибок: %d%n", maxErrCount - errorCount);
         System.out.printf("Допущено ошибок: %d%n", errorCount);

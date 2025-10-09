@@ -1,7 +1,7 @@
 package main.java;
 
-public class Hangman {
-    private Hangman() {
+public final class HangmanRenderer {
+    private HangmanRenderer() {
     }
 
     public static void display(int errorCount) {
