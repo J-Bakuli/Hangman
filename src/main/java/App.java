@@ -23,7 +23,8 @@ public class App {
         boolean isRunning = true;
 
         while (isRunning) {
-            String input = readAndValidateInput();
+            String input = readInput();
+            validateInput(input);
 
             switch (input) {
                 case "н":
@@ -45,16 +46,13 @@ public class App {
         displayMenu();
     }
 
-    private static String readAndValidateInput() {
-        String input = readInput();
+    private static String readInput() {
+        return scanner.nextLine().toLowerCase(Locale.ROOT).trim();
+    }
 
+    private static void validateInput(String input) {
         while (!UserInputValidation.isValidMenuInput(input)) {
             input = readInput();
         }
-        return input;
-    }
-
-    private static String readInput() {
-        return scanner.nextLine().toLowerCase(Locale.ROOT).trim();
     }
 }
