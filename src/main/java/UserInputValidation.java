@@ -1,24 +1,13 @@
 package main.java;
 
-import java.util.Arrays;
-import java.util.List;
-
 public final class UserInputValidation {
     private UserInputValidation() {
     }
 
     public static boolean isValidMenuInput(String str) {
-        List<String> validCommands = Arrays.asList("н", "в");
-
         if (!checkBasicInput(str)) {
             return false;
         }
-
-        if (!validCommands.contains(str.toLowerCase())) {
-            System.out.printf("Пожалуйста, введите Н или В, вы ввели '%s'%n", str);
-            return false;
-        }
-
         return true;
     }
 

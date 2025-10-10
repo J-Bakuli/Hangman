@@ -9,7 +9,7 @@ public class App {
     public void run() {
         try {
             displayMenu();
-            handleUserInput();
+            handleUserMenuInput();
         } finally {
             scanner.close();
         }
@@ -19,12 +19,12 @@ public class App {
         System.out.println("Начать новую игру - нажмите Н. Выйти из игры - нажмите В");
     }
 
-    private static void handleUserInput() {
+    private static void handleUserMenuInput() {
         boolean isRunning = true;
 
         while (isRunning) {
             String input = readInput();
-            validateInput(input);
+            validateUserMenuInput(input);
 
             switch (input) {
                 case "н":
@@ -50,7 +50,7 @@ public class App {
         return scanner.nextLine().toLowerCase(Locale.ROOT).trim();
     }
 
-    private static void validateInput(String input) {
+    private static void validateUserMenuInput(String input) {
         while (!UserInputValidation.isValidMenuInput(input)) {
             input = readInput();
         }

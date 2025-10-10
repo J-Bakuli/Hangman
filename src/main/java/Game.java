@@ -25,7 +25,7 @@ public class Game {
 
         while (errCount < maxErrCount) {
             displayHangmanRender(errCount);
-            handleUserInput(scanner);
+            handleUserGameInput(scanner);
 
             if (isWin()) {
                 System.out.println("Поздравляем, вы выиграли!");
@@ -36,7 +36,7 @@ public class Game {
         System.out.println("Загаданное слово: " + secretWord);
     }
 
-    private void handleUserInput(Scanner scanner) {
+    private void handleUserGameInput(Scanner scanner) {
         secretWordMask = getSecretWordMask(secretWord);
 
         String userInput = scanner.nextLine().toLowerCase(Locale.ROOT).trim();
